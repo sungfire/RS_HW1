@@ -20,9 +20,8 @@ import torch.nn as nn
 
 from recbole.model.abstract_recommender import GeneralRecommender
 from recbole.model.init import xavier_normal_initialization
-from recbole.model.loss import BPRLoss
-from recbole.utils import InputType
 from recbole.model.loss import BPRLoss, EmbLoss
+from recbole.utils import InputType
 
 
 class BPR(GeneralRecommender):
