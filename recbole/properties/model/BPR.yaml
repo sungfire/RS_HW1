@@ -1,1 +1,2 @@
 embedding_size: 64              # (int) The embedding size of users and items.
+reg_lambda: 0.0                 # (float) L2 regularization weight on user/item embeddings.

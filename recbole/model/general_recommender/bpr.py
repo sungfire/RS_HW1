@@ -22,6 +22,7 @@ from recbole.model.abstract_recommender import GeneralRecommender
 from recbole.model.init import xavier_normal_initialization
 from recbole.model.loss import BPRLoss
 from recbole.utils import InputType
+from recbole.model.loss import BPRLoss, EmbLoss
 
 
 class BPR(GeneralRecommender):
@@ -34,11 +35,13 @@ class BPR(GeneralRecommender):
 
         # load parameters info
         self.embedding_size = config["embedding_size"]
+        self.reg_lambda = config["reg_lambda"] 
 
         # define layers and loss
         self.user_embedding = nn.Embedding(self.n_users, self.embedding_size)
         self.item_embedding = nn.Embedding(self.n_items, self.embedding_size)
         self.loss = BPRLoss()
+        self.reg_loss = EmbLoss()   
 
         # parameters initialization
         self.apply(xavier_normal_initialization)
@@ -81,6 +84,8 @@ class BPR(GeneralRecommender):
             user_e, neg_e
         ).sum(dim=1)
         loss = self.loss(pos_item_score, neg_item_score)
+        if self.reg_lambda > 0:
+            loss = loss + self.reg_lambda * self.reg_loss(user_e, pos_e, neg_e, require_pow=True)
         return loss
 
     def predict(self, interaction):
